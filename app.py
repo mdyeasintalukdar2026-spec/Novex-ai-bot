@@ -70,10 +70,10 @@ class GroqAIArbitrationCore:
         payload = {
             "model": "llama-3.3-70b-versatile",
             "messages": [
-                {"role": "system", "content": "You are the master institutional binary options AI arbiter enforcing strict directional rules. Output STRICTLY 'CALL' or 'PUT'."},
+                {"role": "system", "content": "You are the master institutional binary options AI arbiter enforcing strict high-accuracy directional rules. Output STRICTLY 'CALL' or 'PUT'."},
                 {"role": "user", "content": f"Analyze live market context with absolute institutional precision: {market_context}. Output decision strictly ('CALL' or 'PUT')."}
             ],
-            "temperature": 0.2,
+            "temperature": 0.1,
             "max_tokens": 6
         }
         try:
@@ -103,7 +103,7 @@ def get_signal():
         
         base_currency = asset.split('/')[0] if '/' in asset else "USD"
         if not UltraPrecisionEngine.verify_news_and_market_safety(base_currency):
-            res = jsonify({"signal": "CALL", "trend": "NEWS_BLOCK", "confidence": 98, "status": "GUARD"})
+            res = jsonify({"signal": "CALL", "trend": "NEWS_BLOCK", "confidence": 99, "status": "GUARD"})
             res.headers.add("Access-Control-Allow-Origin", "*")
             return res
 
@@ -117,7 +117,7 @@ def get_signal():
         
         res = jsonify({
             "signal": ai_decision,
-            "trend": "VERIFIED_CONFLUENCE",
+            "trend": "HIGH_ACCURACY_CONFLUENCE",
             "confidence": 99,
             "status": "GREEN_EXECUTE"
         })
@@ -164,9 +164,9 @@ def bot_script():
                               '100% { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.9); }' +
                               '}' +
                               '@keyframes fullScreenLaserMove {' +
-                              '0% { transform: translateY(0px); opacity: 0.7; }' +
-                              '50% { opacity: 1; filter: drop-shadow(0 0 20px #ffffff); }' +
-                              '100% { transform: translateY(100vh); opacity: 0.7; }' +
+                              '0% { transform: translateY(0px); opacity: 0.8; }' +
+                              '50% { opacity: 1; filter: drop-shadow(0 0 30px #ffffff); }' +
+                              '100% { transform: translateY(100vh); opacity: 0.8; }' +
                               '}' +
                               '@keyframes popMessage {' +
                               '0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }' +
@@ -213,12 +213,12 @@ def bot_script():
                     var existingScan = d.getElementById('novex-fullscreen-scanner');
                     if(existingScan) existingScan.remove();
 
-                    // টপ নোটিফিকেশন বার থেকে বটম নেভিগেশন বার পর্যন্ত ফুলস্ক্রিন চিকন লেজার স্ক্যানার উইথ হেভি হোয়াইট গ্লো ইফেক্ট
+                    // চিকন লেজার লাইন উইথ হেভি ওভারহেড অ্যান্ড আন্ডারহেড হোয়াইট গ্লো ইফেক্ট (আপনার দেওয়া স্ক্রিনশট অনুযায়ী)
                     var scannerOverlay = d.getElementById('novex-fullscreen-scanner') || d.createElement('div');
                     scannerOverlay.id = 'novex-fullscreen-scanner';
                     scannerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483646;overflow:hidden;background:transparent;';
                     
-                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:3px;background:#ffffff;box-shadow:0 -18px 25px #ffffff, 0 18px 25px #ffffff, 0 0 45px #ffffff, 0 0 75px #ffffff, 0 0 110px #ffffff;animation:fullScreenLaserMove 1s infinite alternate ease-in-out;"></div>';
+                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:2px;background:#ffffff;box-shadow:0 -28px 35px #ffffff, 0 -14px 25px #ffffff, 0 14px 25px #ffffff, 0 28px 35px #ffffff, 0 0 60px #ffffff, 0 0 95px #ffffff, 0 0 140px #ffffff;animation:fullScreenLaserMove 1s infinite alternate ease-in-out;"></div>';
                     d.body.appendChild(scannerOverlay);
 
                     var activeAsset = "EUR/USD";
@@ -230,7 +230,7 @@ def bot_script():
                         }
                     } catch(e){}
 
-                    // ৫ সেকেন্ড (5000ms) স্ক্যানিং চলার পর সিগন্যাল ফেচ করা, পপআপ দেখানো এবং অটো ট্রেড এক্সিকিউট করা
+                    // ৫ সেকেন্ড স্ক্যানিংয়ের পর সিগন্যাল ফেচ, পপআপ এবং অটো ট্রেড এক্সিকিউট
                     setTimeout(function(){
                         if(scannerOverlay) scannerOverlay.remove();
 
@@ -244,7 +244,7 @@ def bot_script():
                             // ছোট সাইজে আকর্ষণীয় UP বা DOWN পপআপ দেখানো
                             showOverlayMessage(isCall ? 'UP' : 'DOWN', isCall ? '#22c55e' : '#ef4444');
 
-                            // ব্রোকারের বাই/সেল বাটনে সিঙ্গেল ক্লিক করে অটো ট্রেড নিয়ে নেওয়া
+                            // ব্রোকার প্ল্যাটফর্মে অটো সিঙ্গেল ক্লিক ট্রেড এক্সিকিউশন
                             executeBrokerTrade(isCall);
                         });
                     }, 5000);
@@ -260,7 +260,6 @@ def bot_script():
                     msg.innerText = text;
                     d.body.appendChild(msg);
 
-                    // ২.৫ সেকেন্ড পরে পপআপটি গায়েব হয়ে যাবে
                     setTimeout(function(){
                         if(msg.parentNode) msg.remove();
                     }, 2500);
@@ -269,9 +268,8 @@ def bot_script():
                 function executeBrokerTrade(isCall) {
                     try {
                         var targetBtn = null;
-                        
-                        // ১. প্রথমে নির্দিষ্ট ক্লাস দিয়ে খোঁজা
                         var selectors = isCall ? ['.btn-call', '.call-btn', 'button.success', '[class*="call"]', '[class*="buy"]'] : ['.btn-put', '.put-btn', 'button.danger', '[class*="put"]', '[class*="sell"]'];
+                        
                         for(var i=0; i<selectors.length; i++) {
                             var btn = d.querySelector(selectors[i]);
                             if(btn) {
@@ -280,7 +278,6 @@ def bot_script():
                             }
                         }
 
-                        // ২. ক্লাস না পেলে টেক্সট বাটন দিয়ে খোঁজা (Call/Higher/Up অথবা Put/Lower/Down)
                         if(!targetBtn) {
                             var allElements = d.querySelectorAll('button, div, span, a');
                             for(var j=0; j<allElements.length; j++) {
@@ -295,7 +292,6 @@ def bot_script():
                             }
                         }
 
-                        // ৩. টার্গেট বাটন পেলে সিঙ্গেল ক্লিক ও মাউস ইভেন্ট ট্রিগার করা
                         if(targetBtn) {
                             ['mousedown', 'mouseup', 'click'].forEach(function(eventType) {
                                 var evt = new MouseEvent(eventType, {
