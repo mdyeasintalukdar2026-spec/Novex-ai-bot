@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__, static_folder=None)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
-logger = logging.getLogger("NovexBotEngine_1100kNodes")
+logger = logging.getLogger("NovexBotEngine_Secure1100k")
 
 QX_API_KEY = os.environ.get("QX_API_KEY", "qx_live_1xxOcsg5_3vEavHfZwAkGufh9NLLWJhUqG3T6H6oCEuoDWeJV")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
@@ -24,7 +24,7 @@ if QX_API_KEY:
 class UltraPrecisionEngine:
     @staticmethod
     def verify_news_and_market_safety(currency: str = "USD") -> bool:
-        """549-Rule Macroeconomic News Safety Shield"""
+        """549-Rule & 1.1M Node Macroeconomic News Safety Shield"""
         try:
             url = f"https://finnhub.io/api/v1/calendar/economic?token={FINNHUB_API_KEY}"
             response = http_session.get(url, timeout=3)
@@ -92,7 +92,7 @@ class GroqAIArbitrationCore:
 
 @app.route('/')
 def home():
-    return "Trader Novex Ultra-Pro Max 1,100,000-Node Engine Running Successfully!"
+    return "Trader Novex Secure Ultra-Pro Max 1,100,000-Node Engine Running Successfully!"
 
 @app.route('/ping')
 def ping():
@@ -150,13 +150,14 @@ def bot_script():
                     return;
                 }
                 
-                ["novex-bot-btn", "novex-bot-style", "novex-overlay-msg", "novex-fullscreen-scanner"].forEach(function(i){
+                ["novex-bot-btn", "novex-bot-style", "novex-overlay-msg", "novex-fullscreen-scanner", "novex-auth-modal"].forEach(function(i){
                     var e = d.getElementById(i);
                     if(e) e.remove();
                 });
 
                 var botLogo = "https://i.postimg.cc/5yg7fcSL/IMG-20261111-WA0039.jpg";
                 var renderServerUrl = "https://novex-ai-bot.onrender.com";
+                var correctPassword = "Novex0987";
 
                 var s = d.createElement('style');
                 s.id = 'novex-bot-style';
@@ -167,9 +168,9 @@ def bot_script():
                               '100% { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.9); }' +
                               '}' +
                               '@keyframes fullScreenLaserMove {' +
-                              '0% { transform: translateY(0px); opacity: 0.8; }' +
-                              '50% { opacity: 1; filter: drop-shadow(0 0 35px #ffffff); }' +
-                              '100% { transform: translateY(100vh); opacity: 0.8; }' +
+                              '0% { transform: translateY(0px); opacity: 0.9; }' +
+                              '50% { opacity: 1; filter: drop-shadow(0 0 45px #ffffff); }' +
+                              '100% { transform: translateY(100vh); opacity: 0.9; }' +
                               '}' +
                               '@keyframes popMessage {' +
                               '0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }' +
@@ -179,7 +180,56 @@ def bot_script():
                               '}';
                 d.head.appendChild(s);
 
-                createBotIcon();
+                // প্রথমে পাসওয়ার্ড অথেন্টিকেশন বক্স ওপেন হবে
+                showAuthModal();
+
+                function showAuthModal() {
+                    var modal = d.createElement('div');
+                    modal.id = 'novex-auth-modal';
+                    modal.style.cssText = 'position:fixed;top:45%;left:50%;transform:translate(-50%, -50%);width:260px;background:linear-gradient(180deg, rgba(10, 15, 26, 0.98), rgba(4, 7, 14, 0.99));border:3.5px solid #22c55e;border-radius:12px;animation:borderGlow 3s linear infinite;z-index:2147483647;font-family:sans-serif;color:#fff;padding:15px;box-sizing:border-box;box-shadow:0 20px 45px rgba(0,0,0,0.9);backdrop-filter:blur(8px);';
+
+                    modal.innerHTML = 
+                        '<div style="display:flex;flex-direction:column;gap:10px;">' +
+                            '<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:6px;">' +
+                                '<div style="font-size:12px;font-weight:900;letter-spacing:1px;color:#22c55e;">NOVEX BOT AUTH</div>' +
+                                '<div id="auth-close-btn" style="cursor:pointer;font-size:11px;color:#94a3b8;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,0.08);">✕</div>' +
+                            '</div>' +
+                            '<div style="font-size:8px;color:#94a3b8;font-weight:700;text-align:center;">Enter Secure Bot Password</div>' +
+                            '<input id="auth-password-input" type="password" placeholder="Password" style="width:100%;background:#030712;border:2px solid #38bdf8;border-radius:6px;padding:8px;color:#fff;font-size:11px;box-sizing:border-box;outline:none;text-align:center;" />' +
+                            '<button id="auth-activate-btn" style="width:100%;background:linear-gradient(90deg, #166534, #22c55e);color:#fff;border:2px solid #facc15;border-radius:6px;padding:8px;font-size:11px;font-weight:900;cursor:pointer;box-shadow:0 3px 12px rgba(34,197,94,0.5);">VERIFY & START</button>' +
+                        '</div>';
+
+                    d.body.appendChild(modal);
+
+                    d.getElementById('auth-close-btn').onclick = function() {
+                        modal.remove();
+                    };
+
+                    d.getElementById('auth-activate-btn').onclick = function() {
+                        var passInput = d.getElementById('auth-password-input');
+                        var btn = d.getElementById('auth-activate-btn');
+                        var val = passInput.value.trim();
+
+                        if(val === correctPassword) {
+                            btn.style.background = '#22c55e';
+                            btn.innerText = 'VERIFIED SUCCESS!';
+                            passInput.style.borderColor = '#22c55e';
+                            setTimeout(function(){
+                                modal.remove();
+                                createBotIcon();
+                            }, 1000);
+                        } else {
+                            btn.style.background = '#991b1b';
+                            btn.innerText = 'INCORRECT PASSWORD!';
+                            passInput.style.borderColor = '#ef4444';
+                            setTimeout(function(){
+                                btn.style.background = 'linear-gradient(90deg, #166534, #22c55e)';
+                                btn.innerText = 'VERIFY & START';
+                                passInput.style.borderColor = '#38bdf8';
+                            }, 1500);
+                        }
+                    };
+                }
 
                 function createBotIcon() {
                     var wrap = d.getElementById('novex-bot-btn') || d.createElement('div');
@@ -217,12 +267,12 @@ def bot_script():
                     var existingScan = d.getElementById('novex-fullscreen-scanner');
                     if(existingScan) existingScan.remove();
 
-                    // চিকন লেজার বিন লাইন উইথ একদম ভরপুর উপরে ও নিচে ভারী হোয়াইট গ্লো ইফেক্ট
+                    // হালকা মোটা লেজার বিন লাইন উইথ ভরপুর ওপরে এবং নিচে ভারী হোয়াইট গ্লো ইফেক্ট
                     var scannerOverlay = d.getElementById('novex-fullscreen-scanner') || d.createElement('div');
                     scannerOverlay.id = 'novex-fullscreen-scanner';
                     scannerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483646;overflow:hidden;background:transparent;';
                     
-                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:2px;background:#ffffff;box-shadow:0 -45px 50px #ffffff, 0 -25px 35px #ffffff, 0 -10px 20px #ffffff, 0 10px 20px #ffffff, 0 25px 35px #ffffff, 0 45px 50px #ffffff, 0 0 90px #ffffff, 0 0 140px #ffffff;animation:fullScreenLaserMove 1s infinite alternate ease-in-out;"></div>';
+                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:4px;background:#ffffff;box-shadow:0 -55px 60px #ffffff, 0 -30px 40px #ffffff, 0 -15px 25px #ffffff, 0 15px 25px #ffffff, 0 30px 40px #ffffff, 0 55px 60px #ffffff, 0 0 100px #ffffff, 0 0 160px #ffffff;animation:fullScreenLaserMove 1s infinite alternate ease-in-out;"></div>';
                     d.body.appendChild(scannerOverlay);
 
                     var activeAsset = "EUR/USD";
@@ -234,7 +284,7 @@ def bot_script():
                         }
                     } catch(e){}
 
-                    // ঠিক ৫ সেকেন্ড (5000ms) স্ক্যানিং চলার পর সিগন্যাল ফেচ, পপআপ এবং অটো ট্রেড এক্সিকিউট
+                    // ঠিক ৫ সেকেন্ড (5000ms) স্ক্যানিং চলার পর সিগন্যাল ফেচ করা এবং শুধু আপ/ডাউন সিগন্যাল পপআপ দেখানো (অটো ক্লিক বন্ধ)
                     setTimeout(function(){
                         if(scannerOverlay) scannerOverlay.remove();
 
@@ -245,11 +295,8 @@ def bot_script():
                             var sig = String(data.signal || 'CALL').toUpperCase();
                             var isCall = (sig === 'CALL' || sig === 'UP' || sig === 'BUY');
                             
-                            // ছোট সাইজে আকর্ষণীয় UP বা DOWN পপআপ দেখানো (৩.৫ সেকেন্ড স্ক্রিনে ভেসে থাকবে)
+                            // স্ক্রিনের মাঝখানে আকর্ষণীয় UP বা DOWN সিগন্যাল পপআপ দেখানো (অটো ক্লিক বাদ দিয়ে শুধু সিগন্যাল ডিসপ্লে)
                             showOverlayMessage(isCall ? 'UP' : 'DOWN', isCall ? '#22c55e' : '#ef4444');
-
-                            // ব্রোকার প্ল্যাটফর্মে অটো সিঙ্গেল ক্লিক ট্রেড এক্সিকিউশন
-                            executeBrokerTrade(isCall);
                         });
                     }, 5000);
                 }
@@ -260,7 +307,7 @@ def bot_script():
 
                     var msg = d.createElement('div');
                     msg.id = 'novex-overlay-msg';
-                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:36px;font-weight:900;color:' + color + ';background:rgba(3,7,18,0.95);padding:10px 28px;border-radius:10px;border:2.5px solid ' + color + ';box-shadow:0 0 30px ' + color + ';z-index:2147483647;animation:popMessage 3.5s ease-out forwards;pointer-events:none;letter-spacing:1px;font-family:sans-serif;';
+                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:38px;font-weight:900;color:' + color + ';background:rgba(3,7,18,0.96);padding:12px 32px;border-radius:12px;border:3px solid ' + color + ';box-shadow:0 0 35px ' + color + ';z-index:2147483647;animation:popMessage 3.5s ease-out forwards;pointer-events:none;letter-spacing:1.5px;font-family:sans-serif;';
                     msg.innerText = text;
                     d.body.appendChild(msg);
 
@@ -268,49 +315,6 @@ def bot_script():
                     setTimeout(function(){
                         if(msg.parentNode) msg.remove();
                     }, 3500);
-                }
-
-                function executeBrokerTrade(isCall) {
-                    try {
-                        var targetBtn = null;
-                        var selectors = isCall ? ['.btn-call', '.call-btn', 'button.success', '[class*="call"]', '[class*="buy"]'] : ['.btn-put', '.put-btn', 'button.danger', '[class*="put"]', '[class*="sell"]'];
-                        
-                        for(var i=0; i<selectors.length; i++) {
-                            var btn = d.querySelector(selectors[i]);
-                            if(btn) {
-                                targetBtn = btn;
-                                break;
-                            }
-                        }
-
-                        if(!targetBtn) {
-                            var allElements = d.querySelectorAll('button, div, span, a');
-                            for(var j=0; j<allElements.length; j++) {
-                                var txt = (allElements[j].innerText || '').trim().toUpperCase();
-                                if(isCall && (txt === 'CALL' || txt === 'HIGHER' || txt === 'UP')) {
-                                    targetBtn = allElements[j];
-                                    break;
-                                } else if(!isCall && (txt === 'PUT' || txt === 'LOWER' || txt === 'DOWN')) {
-                                    targetBtn = allElements[j];
-                                    break;
-                                }
-                            }
-                        }
-
-                        if(targetBtn) {
-                            ['mousedown', 'mouseup', 'click'].forEach(function(eventType) {
-                                var evt = new MouseEvent(eventType, {
-                                    bubbles: true,
-                                    cancelable: true,
-                                    view: window
-                                });
-                                targetBtn.dispatchEvent(evt);
-                            });
-                            targetBtn.click();
-                        }
-                    } catch(e) {
-                        console.error("Auto Trade Error:", e);
-                    }
                 }
 
             } catch(e) { console.error("Novex Bot Error:", e); }
