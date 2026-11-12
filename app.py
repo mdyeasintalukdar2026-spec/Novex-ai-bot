@@ -147,7 +147,7 @@ def bot_script():
                     return;
                 }
                 
-                ["novex-bot-btn", "novex-bot-style", "novex-overlay-msg"].forEach(function(i){
+                ["novex-bot-btn", "novex-bot-style", "novex-overlay-msg", "novex-fullscreen-scanner"].forEach(function(i){
                     var e = d.getElementById(i);
                     if(e) e.remove();
                 });
@@ -163,19 +163,15 @@ def bot_script():
                               '66% { border-color: #a855f7; box-shadow: 0 0 25px rgba(168,85,247,0.9); }' +
                               '100% { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.9); }' +
                               '}' +
-                              '@keyframes fastRotateBorder {' +
-                              '0% { transform: rotate(0deg); }' +
-                              '100% { transform: rotate(360deg); }' +
-                              '}' +
-                              '@keyframes whiteLaserScan {' +
-                              '0% { transform: translateY(-70px); opacity: 0.4; }' +
-                              '50% { opacity: 1; filter: drop-shadow(0 0 20px #ffffff) drop-shadow(0 0 40px #ffffff); }' +
-                              '100% { transform: translateY(70px); opacity: 0.4; }' +
+                              '@keyframes fullScreenLaserMove {' +
+                              '0% { transform: translateY(0px); opacity: 0.6; }' +
+                              '50% { opacity: 1; filter: drop-shadow(0 0 35px #ffffff) drop-shadow(0 0 70px #ffffff); }' +
+                              '100% { transform: translateY(calc(100vh - 24px)); opacity: 0.6; }' +
                               '}' +
                               '@keyframes popMessage {' +
-                              '0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }' +
-                              '50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }' +
-                              '100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }' +
+                              '0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }' +
+                              '50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }' +
+                              '100% { transform: translate(-50%, -50%) scale(1); opacity: 0.95; }' +
                               '}';
                 d.head.appendChild(s);
 
@@ -208,18 +204,23 @@ def bot_script():
                     
                     wrap.onclick = function(){ 
                         if(!hasMoved) {
-                            runAutoScanAndTrade();
+                            runFullScreenScanAndTrade();
                         } 
                     };
                 }
 
-                function runAutoScanAndTrade() {
-                    var btn = d.getElementById('novex-bot-btn');
-                    if(!btn) return;
+                function runFullScreenScanAndTrade() {
+                    // পুরানো কোনো স্ক্যানার থাকলে রিমুভ করা
+                    var existingScan = d.getElementById('novex-fullscreen-scanner');
+                    if(existingScan) existingScan.remove();
+
+                    // টপ নোটিফিকেশন বার থেকে বটম নেভিগেশন বার পর্যন্ত ফুলস্ক্রিন হোয়াইট লেজার স্ক্যানার তৈরি
+                    var scannerOverlay = d.getElementById('novex-fullscreen-scanner') || d.createElement('div');
+                    scannerOverlay.id = 'novex-fullscreen-scanner';
+                    scannerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483646;overflow:hidden;background:rgba(255,255,255,0.03);';
                     
-                    // লেজার স্ক্যানিং ইফেক্ট উইথ থিক হোয়াইট বার
-                    btn.innerHTML = '<div style="position:absolute;width:100%;height:12px;background:#ffffff;box-shadow:0 0 25px #ffffff, 0 0 50px #ffffff;animation:whiteLaserScan 0.5s infinite ease-in-out;z-index:10;"></div>' +
-                                    '<img src="' + botLogo + '" style="width:100%;height:100%;object-fit:cover;opacity:0.6;border-radius:50%;" />';
+                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:20px;background:linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,1), rgba(255,255,255,0.9));box-shadow:0 0 35px #ffffff, 0 0 70px #ffffff, 0 0 110px #ffffff;animation:fullScreenLaserMove 1.2s infinite ease-in-out alternate;"></div>';
+                    d.body.appendChild(scannerOverlay);
 
                     var activeAsset = "EUR/USD";
                     try {
@@ -230,8 +231,10 @@ def bot_script():
                         }
                     } catch(e){}
 
-                    // ৫ সেকেন্ড স্ক্যানিংয়ের পর সিগন্যাল রিকোয়েস্ট ও ট্রেড এক্সিকিউশন
+                    // ঠিক ৫ সেকেন্ড (5000ms) ফুলস্ক্রিন স্ক্যানিং চলার পর সিগন্যাল ফেচ করা এবং ট্রেড এক্সিকিউট করা
                     setTimeout(function(){
+                        if(scannerOverlay) scannerOverlay.remove();
+
                         fetch(renderServerUrl + '/signal?asset=' + encodeURIComponent(activeAsset) + '&t=' + Date.now())
                         .then(function(r){ return r.json(); })
                         .catch(function(){ return {signal: "CALL"}; })
@@ -239,13 +242,10 @@ def bot_script():
                             var sig = String(data.signal || 'CALL').toUpperCase();
                             var isCall = (sig === 'CALL' || sig === 'UP' || sig === 'BUY');
                             
-                            // অরিজিনাল লোগো ফিরিয়ে আনা
-                            btn.innerHTML = '<img src="' + botLogo + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
-
-                            // স্ক্রিনের মাঝখানে বড় করে UP বা DOWN দেখানো
+                            // স্ক্রিনের মাঝখানে ছোট সাইজে আকর্ষণীয় UP বা DOWN পপআপ দেখানো
                             showOverlayMessage(isCall ? 'UP' : 'DOWN', isCall ? '#22c55e' : '#ef4444');
 
-                            // ব্রোকার প্ল্যাটফর্মে অটো ক্লিক ট্রিগার (যদি কোটেক্সের ট্রেড বাটন পাওয়া যায়)
+                            // ব্রোকারের বাই (Call) অথবা সেল (Put) বাটনে অটো সিঙ্গেল ক্লিক ট্রিগার করা
                             executeBrokerTrade(isCall);
                         });
                     }, 5000);
@@ -257,10 +257,11 @@ def bot_script():
 
                     var msg = d.createElement('div');
                     msg.id = 'novex-overlay-msg';
-                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:65px;font-weight:900;color:' + color + ';background:rgba(0,0,0,0.85);padding:20px 45px;border-radius:16px;border:4px solid ' + color + ';box-shadow:0 0 50px ' + color + ';z-index:2147483647;animation:popMessage 1s ease-out forwards;pointer-events:none;letter-spacing:2px;font-family:sans-serif;';
+                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:42px;font-weight:900;color:' + color + ';background:rgba(3,7,18,0.92);padding:12px 32px;border-radius:12px;border:3px solid ' + color + ';box-shadow:0 0 35px ' + color + ';z-index:2147483647;animation:popMessage 0.8s ease-out forwards;pointer-events:none;letter-spacing:1.5px;font-family:sans-serif;';
                     msg.innerText = text;
                     d.body.appendChild(msg);
 
+                    // ২.৫ সেকেন্ড পরে পপআপটি স্বয়ংক্রিয়ভাবে গায়েব হয়ে যাবে
                     setTimeout(function(){
                         if(msg.parentNode) msg.remove();
                     }, 2500);
@@ -268,9 +269,8 @@ def bot_script():
 
                 function executeBrokerTrade(isCall) {
                     try {
-                        var selectors = isCall ? ['.btn-call', '.deal-buy', '[class*="call"]', 'button:contains("Higher")'] : ['.btn-put', '.deal-sell', '[class*="put"]', 'button:contains("Lower")'];
                         var targetBtn = null;
-                        var allButtons = d.querySelectorAll('button, div');
+                        var allButtons = d.querySelectorAll('button, div, span');
                         for(var i=0; i<allButtons.length; i++) {
                             var txt = (allButtons[i].innerText || '').trim().toUpperCase();
                             if(isCall && (txt === 'CALL' || txt === 'HIGHER' || txt === 'UP')) {
