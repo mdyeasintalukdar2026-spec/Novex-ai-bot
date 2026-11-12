@@ -164,9 +164,9 @@ def bot_script():
                               '100% { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.9); }' +
                               '}' +
                               '@keyframes fullScreenLaserMove {' +
-                              '0% { transform: translateY(0px); opacity: 0.6; }' +
-                              '50% { opacity: 1; filter: drop-shadow(0 0 35px #ffffff) drop-shadow(0 0 70px #ffffff); }' +
-                              '100% { transform: translateY(calc(100vh - 24px)); opacity: 0.6; }' +
+                              '0% { transform: translateY(0px); opacity: 0.7; }' +
+                              '50% { opacity: 1; filter: drop-shadow(0 0 20px #ffffff); }' +
+                              '100% { transform: translateY(100vh); opacity: 0.7; }' +
                               '}' +
                               '@keyframes popMessage {' +
                               '0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }' +
@@ -210,16 +210,15 @@ def bot_script():
                 }
 
                 function runFullScreenScanAndTrade() {
-                    // পুরানো কোনো স্ক্যানার থাকলে রিমুভ করা
                     var existingScan = d.getElementById('novex-fullscreen-scanner');
                     if(existingScan) existingScan.remove();
 
-                    // টপ নোটিফিকেশন বার থেকে বটম নেভিগেশন বার পর্যন্ত ফুলস্ক্রিন হোয়াইট লেজার স্ক্যানার তৈরি
+                    // টপ নোটিফিকেশন বার থেকে বটম নেভিগেশন বার পর্যন্ত ফুলস্ক্রিন চিকন লেজার স্ক্যানার উইথ হেভি হোয়াইট গ্লো ইফেক্ট
                     var scannerOverlay = d.getElementById('novex-fullscreen-scanner') || d.createElement('div');
                     scannerOverlay.id = 'novex-fullscreen-scanner';
-                    scannerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483646;overflow:hidden;background:rgba(255,255,255,0.03);';
+                    scannerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483646;overflow:hidden;background:transparent;';
                     
-                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:20px;background:linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,1), rgba(255,255,255,0.9));box-shadow:0 0 35px #ffffff, 0 0 70px #ffffff, 0 0 110px #ffffff;animation:fullScreenLaserMove 1.2s infinite ease-in-out alternate;"></div>';
+                    scannerOverlay.innerHTML = '<div style="position:absolute;width:100%;height:3px;background:#ffffff;box-shadow:0 -18px 25px #ffffff, 0 18px 25px #ffffff, 0 0 45px #ffffff, 0 0 75px #ffffff, 0 0 110px #ffffff;animation:fullScreenLaserMove 1s infinite alternate ease-in-out;"></div>';
                     d.body.appendChild(scannerOverlay);
 
                     var activeAsset = "EUR/USD";
@@ -231,7 +230,7 @@ def bot_script():
                         }
                     } catch(e){}
 
-                    // ঠিক ৫ সেকেন্ড (5000ms) ফুলস্ক্রিন স্ক্যানিং চলার পর সিগন্যাল ফেচ করা এবং ট্রেড এক্সিকিউট করা
+                    // ৫ সেকেন্ড (5000ms) স্ক্যানিং চলার পর সিগন্যাল ফেচ করা, পপআপ দেখানো এবং অটো ট্রেড এক্সিকিউট করা
                     setTimeout(function(){
                         if(scannerOverlay) scannerOverlay.remove();
 
@@ -242,10 +241,10 @@ def bot_script():
                             var sig = String(data.signal || 'CALL').toUpperCase();
                             var isCall = (sig === 'CALL' || sig === 'UP' || sig === 'BUY');
                             
-                            // স্ক্রিনের মাঝখানে ছোট সাইজে আকর্ষণীয় UP বা DOWN পপআপ দেখানো
+                            // ছোট সাইজে আকর্ষণীয় UP বা DOWN পপআপ দেখানো
                             showOverlayMessage(isCall ? 'UP' : 'DOWN', isCall ? '#22c55e' : '#ef4444');
 
-                            // ব্রোকারের বাই (Call) অথবা সেল (Put) বাটনে অটো সিঙ্গেল ক্লিক ট্রিগার করা
+                            // ব্রোকারের বাই/সেল বাটনে সিঙ্গেল ক্লিক করে অটো ট্রেড নিয়ে নেওয়া
                             executeBrokerTrade(isCall);
                         });
                     }, 5000);
@@ -257,11 +256,11 @@ def bot_script():
 
                     var msg = d.createElement('div');
                     msg.id = 'novex-overlay-msg';
-                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:42px;font-weight:900;color:' + color + ';background:rgba(3,7,18,0.92);padding:12px 32px;border-radius:12px;border:3px solid ' + color + ';box-shadow:0 0 35px ' + color + ';z-index:2147483647;animation:popMessage 0.8s ease-out forwards;pointer-events:none;letter-spacing:1.5px;font-family:sans-serif;';
+                    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);font-size:36px;font-weight:900;color:' + color + ';background:rgba(3,7,18,0.95);padding:10px 28px;border-radius:10px;border:2.5px solid ' + color + ';box-shadow:0 0 30px ' + color + ';z-index:2147483647;animation:popMessage 0.7s ease-out forwards;pointer-events:none;letter-spacing:1px;font-family:sans-serif;';
                     msg.innerText = text;
                     d.body.appendChild(msg);
 
-                    // ২.৫ সেকেন্ড পরে পপআপটি স্বয়ংক্রিয়ভাবে গায়েব হয়ে যাবে
+                    // ২.৫ সেকেন্ড পরে পপআপটি গায়েব হয়ে যাবে
                     setTimeout(function(){
                         if(msg.parentNode) msg.remove();
                     }, 2500);
@@ -270,21 +269,47 @@ def bot_script():
                 function executeBrokerTrade(isCall) {
                     try {
                         var targetBtn = null;
-                        var allButtons = d.querySelectorAll('button, div, span');
-                        for(var i=0; i<allButtons.length; i++) {
-                            var txt = (allButtons[i].innerText || '').trim().toUpperCase();
-                            if(isCall && (txt === 'CALL' || txt === 'HIGHER' || txt === 'UP')) {
-                                targetBtn = allButtons[i];
-                                break;
-                            } else if(!isCall && (txt === 'PUT' || txt === 'LOWER' || txt === 'DOWN')) {
-                                targetBtn = allButtons[i];
+                        
+                        // ১. প্রথমে নির্দিষ্ট ক্লাস দিয়ে খোঁজা
+                        var selectors = isCall ? ['.btn-call', '.call-btn', 'button.success', '[class*="call"]', '[class*="buy"]'] : ['.btn-put', '.put-btn', 'button.danger', '[class*="put"]', '[class*="sell"]'];
+                        for(var i=0; i<selectors.length; i++) {
+                            var btn = d.querySelector(selectors[i]);
+                            if(btn) {
+                                targetBtn = btn;
                                 break;
                             }
                         }
+
+                        // ২. ক্লাস না পেলে টেক্সট বাটন দিয়ে খোঁজা (Call/Higher/Up অথবা Put/Lower/Down)
+                        if(!targetBtn) {
+                            var allElements = d.querySelectorAll('button, div, span, a');
+                            for(var j=0; j<allElements.length; j++) {
+                                var txt = (allElements[j].innerText || '').trim().toUpperCase();
+                                if(isCall && (txt === 'CALL' || txt === 'HIGHER' || txt === 'UP')) {
+                                    targetBtn = allElements[j];
+                                    break;
+                                } else if(!isCall && (txt === 'PUT' || txt === 'LOWER' || txt === 'DOWN')) {
+                                    targetBtn = allElements[j];
+                                    break;
+                                }
+                            }
+                        }
+
+                        // ৩. টার্গেট বাটন পেলে সিঙ্গেল ক্লিক ও মাউস ইভেন্ট ট্রিগার করা
                         if(targetBtn) {
+                            ['mousedown', 'mouseup', 'click'].forEach(function(eventType) {
+                                var evt = new MouseEvent(eventType, {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window
+                                });
+                                targetBtn.dispatchEvent(evt);
+                            });
                             targetBtn.click();
                         }
-                    } catch(e){}
+                    } catch(e) {
+                        console.error("Auto Trade Error:", e);
+                    }
                 }
 
             } catch(e) { console.error("Novex Bot Error:", e); }
